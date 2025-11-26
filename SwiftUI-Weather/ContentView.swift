@@ -13,7 +13,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            BackgroundView(isNight: $isNight)
+            BackgroundView(isNight: isNight)
             VStack {
                 CityTextView(cityName: "Manhattan, NY")
                 
@@ -43,7 +43,7 @@ struct ContentView: View {
                 }
                 .padding(15)
                 .background(Color.gray.opacity(0.3))
-                .cornerRadius(30)
+                .clipShape(RoundedRectangle(cornerRadius: 30))
                 
                 Spacer()
                 
@@ -67,14 +67,14 @@ struct ContentView: View {
 
 struct BackgroundView: View {
     
-    @Binding var isNight: Bool
+    var isNight: Bool
     
     var body: some View {
         LinearGradient(gradient: Gradient(colors: [isNight ? .black : .blue,
                                                    isNight ? .gray : Color("lightBlue")]),
                        startPoint: .topLeading,
                        endPoint: .bottomTrailing)
-            .edgesIgnoringSafeArea(.all)
+        .ignoresSafeArea(.all)
     }
 }
 
@@ -87,7 +87,7 @@ struct CityTextView: View {
             .font(.system(size: 32,
                           weight: .medium,
                           design: .default))
-            .foregroundColor(.white)
+            .foregroundStyle(.white)
             .padding()
     }
 }
@@ -106,7 +106,7 @@ struct MainWeatherStatusView: View {
                                 .frame(width: 180, height: 180)
                             Text("\(temperature)°")
                                 .font(.system(size: 70, weight: .medium))
-                                .foregroundColor(.white)
+                                .foregroundStyle(.white)
                         }
                         .padding(.bottom, 50)
     }
@@ -122,7 +122,7 @@ struct WeatherDayView: View {
         VStack(spacing:20) {
             Text(dayOfWeek)
                 .font(.system(size: 16, weight: .medium, design: .default))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
             Image(systemName: imageName)
                 .renderingMode(.original)
                 .resizable()
@@ -130,7 +130,7 @@ struct WeatherDayView: View {
                 .frame(width: 50, height: 50)
             Text("\(temperature)°")
                 .font(.system(size: 22, weight: .medium, design: .default))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
         }
     }
 }
