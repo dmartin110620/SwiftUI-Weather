@@ -13,10 +13,14 @@ struct DailyWeather: Identifiable {
     let dayOfWeek: String
     let imageName: String
     let temperature: Int
+    let highTemp: Int?
+    let lowTemp: Int?
     
-    init(dayOfWeek: String, imageName: String, temperature: Int) {
+    init(dayOfWeek: String, imageName: String, temperature: Int, highTemp: Int? = nil, lowTemp: Int? = nil) {
         self.dayOfWeek = dayOfWeek
         self.imageName = imageName
         self.temperature = temperature
+        self.highTemp = highTemp
+        self.lowTemp = lowTemp
     }
 }
