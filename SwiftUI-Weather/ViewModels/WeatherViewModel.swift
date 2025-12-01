@@ -15,20 +15,26 @@ class WeatherViewModel: ObservableObject {
     @Published var forecast: [DailyWeather] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var location: String = "Bogota"
+    @Published var isNight: Bool = false
+    @Published var currentTime: String = ""
+    
+    var currentCity: City
     
     private let weatherService = WeatherService()
+    private var currentTimezone: String = "UTC"
     
+    init(city: City = DefaultCities.cities[0]) {
+        self.currentCity = city
+    }
+    
+//    Load for current city
     func loadWeather(for city: String? = nil) async {
-        if let city = city {
-            location = city
-        }
         
         isLoading = true
         errorMessage = nil
         
         do {
-            let response = try await weatherService.getWeather(for: location)
+            let response = try await weatherService.getWeather(for: currentCity)
             await updateWeatherData(from: response)
         } catch {
             errorMessage = "Failed to load weather: \(error.localizedDescription)"
@@ -37,16 +43,36 @@ class WeatherViewModel: ObservableObject {
         }
         
         isLoading = false
-        
+    }
+    
+//    Load for different city
+    func loadWeather (for city: City) async {
+        self.currentCity = city
+        await loadWeather()
     }
     
     private func updateWeatherData(from response: WeatherResponse) async {
+        self.currentTimezone = response.timezone
+        
+        self.isNight = TimeHelper.isNightTime(
+            in: response.timezone,
+            sunrise: response.daily.sunrise,
+            sunset: response.daily.sunset
+        )
+        
+        self.currentTime = TimeHelper.getCurrentTimeInTimezone(response.timezone)
+        
         currentWeather = DailyWeather(
             dayOfWeek: "Today",
-            imageName: WeatherCodeMapper.getSFSymbol(for: response.current.weatherCode),
+            imageName: WeatherCodeMapper.getSFSymbol(
+                for: response.current.weatherCode,
+                isNight: isNight
+            ),
             temperature: Int(response.current.temperature.rounded()),
-            highTemp: nil,
-            lowTemp: nil
+            highTemp: Int(response.daily.temperatureMax[0].rounded()),
+            lowTemp: Int(response.daily.temperatureMin[0].rounded()),
+            weatherCode: response.current.weatherCode,
+            timezone: response.timezone
         )
         
         forecast = []
@@ -59,10 +85,36 @@ class WeatherViewModel: ObservableObject {
                 imageName: WeatherCodeMapper.getSFSymbol(for: response.daily.weatherCode[i]),
                 temperature: Int(response.daily.temperatureMax[i].rounded()),
                 highTemp: Int(response.daily.temperatureMax[i].rounded()),
-                lowTemp: Int(response.daily.temperatureMin[i].rounded())
+                lowTemp: Int(response.daily.temperatureMin[i].rounded()),
+                weatherCode: response.daily.weatherCode[i],
+                timezone: response.timezone
             )
             forecast.append(weather)
         }
+    }
+    
+    func toggleDayNight() {
+        isNight.toggle()
+        updateIconsForCurrentDayNight()
+    }
+    
+    private func updateIconsForCurrentDayNight() {
+        if let current = currentWeather {
+            currentWeather = DailyWeather(
+                dayOfWeek: current.dayOfWeek,
+                imageName: WeatherCodeMapper.getSFSymbol(for: current.weatherCode, isNight: isNight),
+                temperature: current.temperature,
+                highTemp: current.highTemp,
+                lowTemp: current.lowTemp,
+                weatherCode: current.weatherCode,
+                timezone: current.timezone
+            )
+        }
+    }
+    
+    private func isCurrentlyNightTime() -> Bool {
+        let hour = Calendar.current.component(.hour, from: Date())
+        return hour < 6 || hour > 18 // Simple: night between 6 PM and 6 AM
     }
     
     private func getDayName(from dateString: String) -> String {
@@ -82,7 +134,9 @@ class WeatherViewModel: ObservableObject {
         currentWeather = DailyWeather(
             dayOfWeek: "Today",
             imageName: "cloud.sun.fill",
-            temperature: 76
+            temperature: 76,
+            weatherCode: 2,
+            timezone: "America/New_York"
         )
     }
 }
