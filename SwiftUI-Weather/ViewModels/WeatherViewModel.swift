@@ -38,7 +38,7 @@ class WeatherViewModel: ObservableObject {
             await updateWeatherData(from: response)
         } catch {
             errorMessage = "Failed to load weather: \(error.localizedDescription)"
-            
+            print("Weather API error:", error)
             await loadMockData()
         }
         

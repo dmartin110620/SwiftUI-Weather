@@ -11,8 +11,8 @@ class WeatherService {
     private let baseURL = "https://api.open-meteo.com/v1/forecast"
     
     func getWeather(for city: City) async throws -> WeatherResponse {
-//        let coordinates = getCoordinates(for: city)
-        let urlString = "\(baseURL)?latitude=\(city.latitude)&longitude=\(city.longitude)&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=temperature_2m,weather_code,is_day&timezone=America/Bogota"
+        let urlString = "\(baseURL)?latitude=\(city.latitude)&longitude=\(city.longitude)&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto"
+        // Check API, params sunset,sunrise. Future implementation
         
         guard let url = URL(string: urlString) else {
             throw URLError(.badURL)
