@@ -32,11 +32,13 @@ struct PullToRefresh: View {
                         Spacer()
                         if needRefresh {
                             ProgressView("Refreshing")
-                        } else {
+                        } else if (geo.frame(in: .named(coordinateSpaceName)).midY > 3) {
                             Text("Pull down to refresh")
+                                .foregroundStyle(.white)
+                                .animation(.easeInOut(duration: 0.2))
                         }
                         Spacer()
                     }
-                }.padding(.top, -50)
+                }.padding(.top, -80)
     }
 }
