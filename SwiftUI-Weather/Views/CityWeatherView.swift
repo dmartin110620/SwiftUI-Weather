@@ -21,6 +21,11 @@ struct CityWeatherView: View {
             BackgroundView(isNight: viewModel.isNight)
             
             ScrollView {
+                PullToRefresh(coordinateSpaceName: "pullToRefresh") {
+                    Task {
+                        await viewModel.loadWeather()
+                    }
+                }
                 VStack {
                     VStack {
                         CityTextView(cityName: city.displayName)
@@ -62,38 +67,11 @@ struct CityWeatherView: View {
                         }
                     }
                     Spacer()
-                    
-                    VStack {
-                        Button {
-                            Task {
-                                await viewModel.loadWeather()
-                            }
-                        } label: {
-                            WeatherButton(
-                                title: "Refresh",
-                                textColor: .black,
-                                backgroundColor: Color.white.opacity(0.7)
-                            )
-                        }
-                        Button {
-                            viewModel.toggleDayNight()
-                        } label: {
-                            WeatherButton(
-                                title: "Change Day Time",
-                                textColor: .black,
-                                backgroundColor: (Color.white.opacity(0.7))
-                            )
-                        }
-                        .padding(.bottom, 20)
-                    }
-                    Spacer()
                 }
             }
         }
+        .coordinateSpace(name: "pullToRefresh")
         .task {
-            await viewModel.loadWeather()
-        }
-        .refreshable {
             await viewModel.loadWeather()
         }
     }
