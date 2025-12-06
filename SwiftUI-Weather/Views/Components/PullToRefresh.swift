@@ -32,6 +32,8 @@ struct PullToRefresh: View {
                         Spacer()
                         if needRefresh {
                             ProgressView("Refreshing")
+                                .foregroundStyle(.white)
+                                .scaleEffect(1.1)
                         } else if (geo.frame(in: .named(coordinateSpaceName)).midY > 3) {
                             Text("Pull down to refresh")
                                 .foregroundStyle(.white)

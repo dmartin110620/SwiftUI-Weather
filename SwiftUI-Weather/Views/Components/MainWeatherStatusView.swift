@@ -19,9 +19,10 @@ struct MainWeatherStatusView: View {
                 .renderingMode(.original)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 160, height: 160)
+                .frame(width: 120, height: 120)
+                .foregroundStyle(.white)
             Text("\(temperature)°")
-                .font(.system(size: 70, weight: .medium))
+                .font(.system(size: 70, weight: .light))
                 .foregroundStyle(.white)
             HStack(spacing: 10) {
                 Text("H:\(highTemp)°")

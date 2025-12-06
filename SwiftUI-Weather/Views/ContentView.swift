@@ -11,17 +11,24 @@ struct ContentView: View {
     
     @State private var selectedCity: City = DefaultCities.cities[0]
     @State private var cities: [City] = DefaultCities.cities
+    @State private var searchText: String = ""
     
     var body: some View {
-        TabView(selection: $selectedCity) {
-            ForEach(cities) { city in CityWeatherView(city: city)
-                    .tabItem {
-                        Label(city.name, systemImage: getCityIcon(for: city.name))
-                    }
-                    .tag(city)
+        VStack {
+            TabView(selection: $selectedCity) {
+                ForEach(cities) { city in CityWeatherView(city: city)
+                        .tabItem {
+                            Label(city.name, systemImage: getCityIcon(for: city.name))
+                        }
+                        .tag(city)
+                }
             }
+            .accentColor(.blue)
+            .tabViewStyle(.page)
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            .searchable(text: $searchText)
         }
-        .accentColor(.blue)
+        .ignoresSafeArea(.all)
     }
     private func getCityIcon(for cityName: String) -> String {
         switch cityName {

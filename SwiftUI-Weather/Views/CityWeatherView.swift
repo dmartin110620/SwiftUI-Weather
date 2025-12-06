@@ -10,8 +10,10 @@ import SwiftUI
 struct CityWeatherView: View {
     let city: City
     @StateObject private var viewModel: WeatherViewModel
+    @State private var showHourlyForecast = true
+    @State private var showDailyForecast = true
     
-    init (city: City) {
+    init(city: City) {
         self.city = city
         _viewModel = StateObject(wrappedValue: WeatherViewModel(city: city))
     }
@@ -26,81 +28,85 @@ struct CityWeatherView: View {
                         await viewModel.loadWeather()
                     }
                 }
-                VStack {
-                    VStack {
+                
+                VStack(spacing: 20) {
+                    // City header
+                    VStack(spacing: 5) {
                         CityTextView(cityName: city.displayName)
-                        
-                        if viewModel.isLoading {
+                    }
+                    
+                    // Loading state
+                    if viewModel.isLoading && viewModel.currentWeather == nil {
+                        VStack {
                             Spacer()
                             ProgressView("Loading forecast...")
                                 .scaleEffect(1.2)
                                 .foregroundStyle(.white)
                             Spacer()
-                        } else if let currentWeather = viewModel.currentWeather, let forecast = viewModel.forecast.first {
-                            MainWeatherStatusView(
-                                imageName: currentWeather.imageName,
-                                temperature: currentWeather.temperature,
-                                highTemp: forecast.highTemp ?? currentWeather.temperature,
-                                lowTemp: forecast.lowTemp ?? currentWeather.temperature
-                            )
+                        }
+                        .frame(height: 200)
+                    }
+                    
+                    // Current weather
+                    if let currentWeather = viewModel.currentWeather {
+                        MainWeatherStatusView(
+                            imageName: currentWeather.imageName,
+                            temperature: currentWeather.temperature,
+                            highTemp: currentWeather.highTemp ?? currentWeather.temperature,
+                            lowTemp: currentWeather.lowTemp ?? currentWeather.temperature
+                        )
+                        
+                        // Hourly forecast
+                        HourlyForecastView(
+                            hourlyForecasts: viewModel.hourlyForecast,
+                            isExpanded: $showHourlyForecast
+                        )
+                        
+                        // Daily forecast
+                        DailyForecastView(
+                                    dailyForecast: viewModel.dailyForecast,
+                                    isExpanded: $showDailyForecast
+                                )
+                        
+                    } else if let error = viewModel.errorMessage {
+                        // Error state
+                        VStack(spacing: 15) {
+                            Image(systemName: "exclamationmark.triangle")
+                                .font(.system(size: 50))
+                                .foregroundStyle(.orange)
                             
-                            HStack(spacing: 25) {
-                                ForEach(viewModel.forecast) { dayWeather in
-                                    WeatherDayView (
-                                        dayOfWeek: dayWeather.dayOfWeek,
-                                        imageName: dayWeather.imageName,
-                                        temperature: dayWeather.temperature
-                                    )
-                                }
-                            }
-                            .padding(15)
-                            .background(Color.gray.opacity(0.3))
-                            .clipShape(RoundedRectangle(cornerRadius: 30))
-                            .padding(.bottom, 20)
+                            Text("Couldn't load weather")
+                                .font(.title2)
+                                .foregroundStyle(.white)
                             
-                        } else if let error = viewModel.errorMessage {
-                            ErrorView(error: error) {
+                            Text(error)
+                                .font(.body)
+                                .foregroundStyle(.white.opacity(0.8))
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal)
+                            
+                            Button("Try Again") {
                                 Task {
                                     await viewModel.loadWeather()
                                 }
                             }
+                            .buttonStyle(.borderedProminent)
                         }
+                        .padding()
+                        .background(Color.white.opacity(0.1))
+                        .clipShape(.rect(cornerRadius: 15))
+                        .padding(.horizontal)
                     }
+                    
                     Spacer()
+                    
                 }
+                .padding(.top, 20)
             }
         }
         .coordinateSpace(name: "pullToRefresh")
         .task {
             await viewModel.loadWeather()
         }
-    }
-}
-
-struct ErrorView: View {
-    let error: String
-    let retyAction: () -> Void
-    
-    var body: some View {
-        VStack {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 50))
-                .foregroundStyle(.orange)
-                .padding()
-            
-            Text("Couldn't load weather")
-                .font(.title2)
-                .foregroundStyle(.white)
-            
-            Text(error)
-                .font(.body)
-                .foregroundStyle(.white.opacity(0.8))
-                .multilineTextAlignment(.center)
-                .padding()
-            
-            Button("Try Again!", action: retyAction)
-                .buttonStyle(.borderedProminent)
-        }
-        .padding()
     }
 }

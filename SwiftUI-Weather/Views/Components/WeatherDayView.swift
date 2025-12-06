@@ -21,10 +21,12 @@ struct WeatherDayView: View {
                 .renderingMode(.original)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 50, height: 50)
+                .frame(width: 40, height: 40)
+                .foregroundStyle(.white)
             Text("\(temperature)°")
                 .font(.system(size: 22, weight: .medium, design: .default))
                 .foregroundStyle(.white)
         }
+        .padding(.horizontal, 10)
     }
 }

@@ -14,23 +14,24 @@ struct WeatherResponse: Codable {
     let timezone: String
     let timezoneAbbreviation: String
     let utcOffsetSeconds: Int
-    let current: CurrentWeatherResponse
-    let daily: DailyForecastResponse
+    let hourly: HourlyWeather?
+    let current: CurrentWeather
+    let daily: DailyForecast
 
     enum CodingKeys: String, CodingKey {
         case latitude, longitude, timezone
         case timezoneAbbreviation = "timezone_abbreviation"
         case utcOffsetSeconds = "utc_offset_seconds"
-        case current, daily
+        case current, hourly, daily
     }
 }
 
 // Current weather block
-struct CurrentWeatherResponse: Codable {
+struct CurrentWeather: Codable {
     let time: String
     let temperature: Double
     let weatherCode: Int
-    let isDay: Int?
+    let isDay: Int
 
     enum CodingKeys: String, CodingKey {
         case time
@@ -41,7 +42,7 @@ struct CurrentWeatherResponse: Codable {
 }
 
 // Daily forecast block
-struct DailyForecastResponse: Codable {
+struct DailyForecast: Codable {
     let time: [String]
     let weatherCode: [Int]
     let temperatureMax: [Double]
@@ -55,5 +56,26 @@ struct DailyForecastResponse: Codable {
         case temperatureMax = "temperature_2m_max"
         case temperatureMin = "temperature_2m_min"
         case sunrise, sunset
+    }
+}
+
+// Hourly forecast block
+
+struct HourlyWeather: Codable {
+    let time: [String]
+    let weatherCode: [Int]
+    let temperature: [Double]
+    let precipitation: [Double]?
+    let windSpeed: [Double]?
+    let humidity: [Int]?
+    
+    enum CodingKeys: String, CodingKey {
+        case time
+        case weatherCode = "weather_code"
+        case temperature = "temperature_2m"
+        case precipitation = "precipitation"
+        case windSpeed = "wind_speed_10m"
+        case humidity = "relative_humidity_2m"
+        
     }
 }
