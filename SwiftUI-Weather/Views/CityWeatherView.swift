@@ -21,20 +21,17 @@ struct CityWeatherView: View {
     var body: some View {
         ZStack {
             BackgroundView(isNight: viewModel.isNight)
-            
             ScrollView {
                 PullToRefresh(coordinateSpaceName: "pullToRefresh") {
                     Task {
                         await viewModel.loadWeather()
                     }
                 }
-                
                 VStack(spacing: 20) {
                     // City header
                     VStack(spacing: 5) {
                         CityTextView(cityName: city.displayName)
                     }
-                    
                     // Loading state
                     if viewModel.isLoading && viewModel.currentWeather == nil {
                         VStack {
@@ -101,7 +98,7 @@ struct CityWeatherView: View {
                     Spacer()
                     
                 }
-                .padding(.top, 20)
+                .padding(.bottom, 30)
             }
         }
         .coordinateSpace(name: "pullToRefresh")

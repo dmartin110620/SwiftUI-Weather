@@ -13,33 +13,38 @@ struct ContentView: View {
     @State private var cities: [City] = DefaultCities.cities
     @State private var searchText: String = ""
     
+//    var filteredCities: [City] {
+//        if searchText.isEmpty { return cities }
+//        return cities.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+//    }
+    
     var body: some View {
-        VStack {
+        ZStack(alignment: .bottom) {
+            BackgroundView(isNight: true)
+            
             TabView(selection: $selectedCity) {
-                ForEach(cities) { city in CityWeatherView(city: city)
-                        .tabItem {
-                            Label(city.name, systemImage: getCityIcon(for: city.name))
-                        }
+                ForEach(cities) { city in
+                    CityWeatherView(city: city)
                         .tag(city)
                 }
             }
-            .accentColor(.blue)
-            .tabViewStyle(.page)
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
-            .searchable(text: $searchText)
-        }
-        .ignoresSafeArea(.all)
-    }
-    private func getCityIcon(for cityName: String) -> String {
-        switch cityName {
-        case "New York": return "building.2"
-        case "London": return "crown"
-        case "Tokyo": return "mountain.2"
-        case "Paris": return "eurosign"
-        case "Sydney": return "sun.max"
-        case "Dubai": return "sun.dust"
-        case "São Paulo": return "leaf"
-        default: return "location"
+            .tabViewStyle(.page(indexDisplayMode: .always))
+            .ignoresSafeArea(.all)
+            
+//            if filteredCities.count > 1 {
+//                HStack(spacing: 10) {
+//                    ForEach(filteredCities) { city in
+//                        Circle()
+//                            .frame(width: 10, height: 10)
+//                            .foregroundColor(city.id == selectedCity.id ? .white : .gray.opacity(0.4))
+//                            .glassEffect(.clear)
+//                    }
+//                }
+//                .padding(.horizontal, 20)
+//                .padding(.vertical, 15)
+//                .glassEffect(.clear)
+//                .animation(.easeInOut, value: selectedCity)
+//            }
         }
     }
 }
