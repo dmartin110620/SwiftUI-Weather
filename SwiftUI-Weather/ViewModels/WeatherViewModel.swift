@@ -19,7 +19,7 @@ class WeatherViewModel: ObservableObject {
     @Published var isNight: Bool = false
     @Published var currentTime: String = ""
     
-    var currentCity: City
+    @Published var currentCity: City
     private let weatherService = WeatherService()
     private var currentTimezone: String = "UTC"
     private var currentTask: Task<Void, Never>?
@@ -46,11 +46,19 @@ class WeatherViewModel: ObservableObject {
         await loadWeather()
     }
     
-    /// Manual day/night toggle
-//    func toggleDayNight() {
-//        isNight.toggle()
-//        updateIconsForCurrentDayNight()
-//    }
+    /// Update the current city and refresh weather
+    func updateCity(_ city: City) {
+        // Avoid redundant work
+        if currentCity.id == city.id { return }
+        // Update the city immediately so UI can reflect it
+        currentCity = city
+        // Cancel any in-flight loading for the old city
+        cancelLoading()
+        // Kick off a fresh load for the new city
+        Task { [weak self] in
+            await self?.loadWeather()
+        }
+    }
     
     /// Cancel any ongoing weather loading
     func cancelLoading() {
@@ -205,6 +213,8 @@ class WeatherViewModel: ObservableObject {
             dayOfWeek: "Today",
             imageName: "cloud.sun.fill",
             temperature: 76,
+            highTemp: 90,
+            lowTemp: 80,
             weatherCode: 2,
             timezone: "America/New_York"
         )

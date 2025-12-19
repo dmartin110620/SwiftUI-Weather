@@ -76,6 +76,5 @@ struct HourlyWeather: Codable {
         case precipitation = "precipitation"
         case windSpeed = "wind_speed_10m"
         case humidity = "relative_humidity_2m"
-        
     }
 }

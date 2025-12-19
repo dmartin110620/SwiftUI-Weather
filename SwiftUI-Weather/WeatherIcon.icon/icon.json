@@ -8,13 +8,15 @@
         {
           "blend-mode" : "normal",
           "glass" : true,
+          "hidden" : false,
           "image-name" : "Cloud.svg",
           "name" : "Cloud",
+          "opacity" : 0.9,
           "position" : {
             "scale" : 1.8,
             "translation-in-points" : [
-              0.0726310583755776,
-              0.00018475956267138827
+              0.08715727005073859,
+              37.21370038240934
             ]
           }
         }
@@ -31,18 +33,49 @@
     {
       "layers" : [
         {
+          "image-name" : "sparkles 1.svg",
+          "name" : "sparkles 1",
+          "opacity" : 0.75,
+          "position" : {
+            "scale" : 1.5,
+            "translation-in-points" : [
+              -239.9365572700508,
+              -178.91585999999995
+            ]
+          }
+        },
+        {
+          "image-name" : "Sun-2.svg",
+          "name" : "Sun-2",
+          "position" : {
+            "scale" : 2.2,
+            "translation-in-points" : [
+              176.72895727005084,
+              -143.45759999999996
+            ]
+          }
+        },
+        {
           "fill" : "automatic",
+          "hidden" : true,
           "image-name" : "Sun.svg",
           "name" : "Sun",
           "position" : {
             "scale" : 1.8,
             "translation-in-points" : [
-              128.1171875,
-              -127.2265625
+              96.5234375,
+              -96.109375
             ]
           }
         }
       ],
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [
+          0,
+          1
+        ]
+      },
       "shadow" : {
         "kind" : "neutral",
         "opacity" : 0.5
