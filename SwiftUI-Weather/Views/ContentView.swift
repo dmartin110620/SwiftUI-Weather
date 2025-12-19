@@ -9,18 +9,28 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var selectedCity: City = DefaultCities.cities[0]
+    let city: City
+    @StateObject private var viewModel: WeatherViewModel
+    @State private var selectedCity: City
     @State private var cities: [City] = DefaultCities.cities
     @State private var searchText: String = ""
     
-//    var filteredCities: [City] {
-//        if searchText.isEmpty { return cities }
-//        return cities.filter { $0.name.lowercased().contains(searchText.lowercased()) }
-//    }
+    init(city: City) {
+        self.city = city
+        _viewModel = StateObject(wrappedValue: WeatherViewModel(city: city))
+        self._selectedCity = State(initialValue: city)
+    }
+    
+    var filteredCities: [City] {
+        if searchText.isEmpty { return cities }
+        return cities.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+    }
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            BackgroundView(isNight: true)
+            BackgroundView(isNight: viewModel.isNight)
+                .animation(.easeInOut(duration: 0.35), value: viewModel.isNight)
+                .transition(.opacity)
             
             TabView(selection: $selectedCity) {
                 ForEach(cities) { city in
@@ -29,26 +39,17 @@ struct ContentView: View {
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
-            .ignoresSafeArea(.all)
-            
-//            if filteredCities.count > 1 {
-//                HStack(spacing: 10) {
-//                    ForEach(filteredCities) { city in
-//                        Circle()
-//                            .frame(width: 10, height: 10)
-//                            .foregroundColor(city.id == selectedCity.id ? .white : .gray.opacity(0.4))
-//                            .glassEffect(.clear)
-//                    }
-//                }
-//                .padding(.horizontal, 20)
-//                .padding(.vertical, 15)
-//                .glassEffect(.clear)
-//                .animation(.easeInOut, value: selectedCity)
-//            }
+            .ignoresSafeArea(.container)
+            .onChange(of: selectedCity) { oldValue, newValue in
+                viewModel.updateCity(newValue)
+            }
+        }
+        .task {
+            await viewModel.loadWeather()
         }
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(city: DefaultCities.cities.first!)
 }

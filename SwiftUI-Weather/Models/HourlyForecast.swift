@@ -15,33 +15,9 @@ struct HourlyForecast: Identifiable {
     let imageName: String
     let temperature: Int
     let weatherCode: Int
-    let precipitation: Double?
+    let precipitation: Double
     let humidity: Int
-    let windSpeed: Int?
-    let isDay: Bool?
-    
-    init(
-        time: String,
-        hour: String,
-        hour24: String,
-        imageName: String,
-        temperature: Int,
-        weatherCode: Int,
-        precipitation: Double? = nil,
-        humidity: Int,
-        windSpeed: Int? = nil,
-        isDay: Bool? = nil,
-        timezone: String
-    ) {
-        self.time = time
-        self.hour = hour
-        self.hour24 = hour24
-        self.imageName = imageName
-        self.temperature = temperature
-        self.weatherCode = weatherCode
-        self.precipitation = precipitation
-        self.humidity = humidity
-        self.windSpeed = windSpeed
-        self.isDay = isDay
-    }
+    let windSpeed: Int
+    let isDay: Bool
+    let timezone: String
 }

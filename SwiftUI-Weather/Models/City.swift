@@ -8,7 +8,7 @@
 import Foundation
 
 struct City: Identifiable, Hashable, Codable {
-    let id: UUID
+    var id = UUID()
     let name: String
     let country: String
     let latitude: Double
@@ -16,14 +16,6 @@ struct City: Identifiable, Hashable, Codable {
     
     var displayName: String {
         "\(name), \(country)"
-    }
-    
-    init(id: UUID = UUID(), name: String, country: String, latitude: Double, longitude: Double) {
-        self.id = id
-        self.name = name
-        self.country = country
-        self.latitude = latitude
-        self.longitude = longitude
     }
     
     func hash(into hasher: inout Hasher) {

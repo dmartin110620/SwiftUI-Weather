@@ -20,7 +20,6 @@ struct CityWeatherView: View {
     
     var body: some View {
         ZStack {
-            BackgroundView(isNight: viewModel.isNight)
             ScrollView {
                 PullToRefresh(coordinateSpaceName: "pullToRefresh") {
                     Task {
@@ -49,8 +48,8 @@ struct CityWeatherView: View {
                         MainWeatherStatusView(
                             imageName: currentWeather.imageName,
                             temperature: currentWeather.temperature,
-                            highTemp: currentWeather.highTemp ?? currentWeather.temperature,
-                            lowTemp: currentWeather.lowTemp ?? currentWeather.temperature
+                            highTemp: currentWeather.highTemp,
+                            lowTemp: currentWeather.lowTemp
                         )
                         
                         // Hourly forecast
@@ -105,5 +104,23 @@ struct CityWeatherView: View {
         .task {
             await viewModel.loadWeather()
         }
+        .padding(.top, 1)
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

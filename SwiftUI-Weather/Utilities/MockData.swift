@@ -8,6 +8,8 @@
 import Foundation
 
 struct MockData {
+    static let mockDays = ["SUN", "MON", "TUE", "WED", "THU"]
+    
     static let hourlyForecast = [
         HourlyForecast(
             time: "2025-12-01T14:00",
@@ -20,93 +22,33 @@ struct MockData {
             humidity: 65,
             windSpeed: 8,
             isDay: true,
-            timezone: "America/New_York"
+            timezone: ""
         )
     ]
     
-    static let dayWeeklyForecast = [
+    static let dayWeeklyForecast: [DailyWeather] = mockDays.map { day in
         DailyWeather(
-            dayOfWeek: "TUE",
+            dayOfWeek: day,
             imageName: "cloud.sun.fill",
             temperature: 76,
+            highTemp: 90,
+            lowTemp: 70,
             weatherCode: 2,
-            timezone: "America/New_York"
-        ),
-        
-        DailyWeather(
-            dayOfWeek: "WED",
-            imageName: "sun.max.fill",
-            temperature: 89,
-            weatherCode: 0,
-            timezone: "America/New_York"
-        ),
-        
-        DailyWeather(
-            dayOfWeek: "THU",
-            imageName: "cloud.drizzle.fill",
-            temperature: 72,
-            weatherCode: 53,
-            timezone: "America/New_York"
-        ),
-        
-        DailyWeather(
-            dayOfWeek: "FRI",
-            imageName: "tornado",
-            temperature: 70,
-            weatherCode: 95,
-            timezone: "America/New_York"
-        ),
-        
-        DailyWeather(
-            dayOfWeek: "SAT",
-            imageName: "cloud.sun.rain.fill",
-            temperature: 73,
-            weatherCode: 80,
-            timezone: "America/New_York"
+            timezone: ""
         )
-    ]
+    }
     
-    static let nightWeeklyForecast = [
+    static let nightWeeklyForecast: [DailyWeather] = mockDays.map { day in
         DailyWeather(
-            dayOfWeek: "TUE",
+            dayOfWeek: day,
             imageName: "moon.stars.fill",
             temperature: 68,
+            highTemp: 90,
+            lowTemp: 70,
             weatherCode: 0,
-            timezone: "America/New_York"
-        ),
-        
-        DailyWeather(
-            dayOfWeek: "WED",
-            imageName: "moon.fill",
-            temperature: 65,
-            weatherCode: 1,
-            timezone: "America/New_York"
-        ),
-        
-        DailyWeather(
-            dayOfWeek: "THU",
-            imageName: "cloud.moon.fill",
-            temperature: 62,
-            weatherCode: 2,
-            timezone: "America/New_York"
-        ),
-        
-        DailyWeather(
-            dayOfWeek: "FRI",
-            imageName: "wind.snow",
-            temperature: 58,
-            weatherCode: 71,
-            timezone: "America/New_York"
-        ),
-        
-        DailyWeather(
-            dayOfWeek: "SAT",
-            imageName: "cloud.moon.rain.fill",
-            temperature: 60,
-            weatherCode: 63,
-            timezone: "America/New_York"
+            timezone: ""
         )
-    ]
+    }
     
     // Simple fallback forecast
 //    static let weeklyForecast = dayWeeklyForecast
